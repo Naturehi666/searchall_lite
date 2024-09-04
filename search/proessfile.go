@@ -4,40 +4,32 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"searchall3.5/tuozhan/xirangrikui"
 	"strings"
 )
 
 var foundDockerOverlay2 bool
 
 func ProcessFile(info os.FileInfo, path string, absPath string, resultChan chan []string, fastCodeHistoryChan chan string, errchan chan error) {
-	if info.Name() == "config.ini" && strings.Contains(path, "SunloginClient") {
-		fmt.Println("\n本系统安装了向日葵，配置路径为：", path)
-		err := xirangrikui.ProcessFastCodeHistory(path, fastCodeHistoryChan)
-		if err != nil {
 
+	/*else if info.Name() == "passwd" && strings.Contains(absPath, "etc") {
+		fileContent, err := ioutil.ReadFile(absPath)
+		if err != nil {
 			errchan <- err
 			return
 		}
-		/*else if info.Name() == "passwd" && strings.Contains(absPath, "etc") {
-			fileContent, err := ioutil.ReadFile(absPath)
-			if err != nil {
-				errchan <- err
-				return
-			}
-			// 加入到结果中
-			resultChan <- []string{fmt.Sprintf("File: %s\n%s\n", absPath, fileContent)}
-			fmt.Printf("\n读取File: %s\n", absPath)
-		} else if info.Name() == "shadow" && strings.Contains(absPath, "etc") {
-			fileContent, err := ioutil.ReadFile(absPath)
-			if err != nil {
-				errchan <- err
-				return
-			}
-			// 加入到结果中
-			resultChan <- []string{fmt.Sprintf("File: %s\n%s\n", absPath, fileContent)}
-			fmt.Printf("\n读取File: %s\n", absPath)*/
-	} else if info.Name() == "docker" && strings.Contains(absPath, "overlay2") {
+		// 加入到结果中
+		resultChan <- []string{fmt.Sprintf("File: %s\n%s\n", absPath, fileContent)}
+		fmt.Printf("\n读取File: %s\n", absPath)
+	} else if info.Name() == "shadow" && strings.Contains(absPath, "etc") {
+		fileContent, err := ioutil.ReadFile(absPath)
+		if err != nil {
+			errchan <- err
+			return
+		}
+		// 加入到结果中
+		resultChan <- []string{fmt.Sprintf("File: %s\n%s\n", absPath, fileContent)}
+		fmt.Printf("\n读取File: %s\n", absPath)*/
+	if info.Name() == "docker" && strings.Contains(absPath, "overlay2") {
 		overlay2Index := strings.Index(absPath, "overlay2")
 		if overlay2Index != -1 && !foundDockerOverlay2 {
 			dockerOverlay2Path := absPath[:overlay2Index+len("overlay2")]

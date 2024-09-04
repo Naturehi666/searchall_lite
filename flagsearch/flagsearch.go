@@ -12,7 +12,7 @@ func Banner() {
  __
 (_  _  _  __ _ |_  _  |  |
 __)(/_(_| | (_ | |(_| |  |
-        verson:3.5.8
+        verson:3.5.10
                      `)
 }
 
@@ -52,6 +52,16 @@ func FlagSearchall() {
 					Name:  "n",
 					Usage: "Only use custom extension for searching",
 				},
+				&cli.Int64Flag{
+					Name:  "size",
+					Usage: "file size limit in bytes(Default 3M)",
+					Value: 3 * 1024 * 1024,
+				},
+				&cli.IntFlag{
+					Name:  "char",
+					Usage: "character limit(Default 200)",
+					Value: 200,
+				},
 			},
 			Action: func(c *cli.Context) error {
 
@@ -61,21 +71,32 @@ func FlagSearchall() {
 				userStrings := c.String("s")
 				userExtension := c.String("e")
 				userOnlyExten := c.Bool("n")
+				size := c.Int64("size")
+				char := c.Int("char")
 
 				if searchPath != "" {
 					var userRegexList []string
 
 					if userRegexes != "" {
 						inputs := strings.Split(userRegexes, ",")
-						userRegexList = inputs
+						userRegexList = processUserString(inputs)
 
 					} else if userStrings != "" {
 						inputs := strings.Split(userStrings, ",")
-						userRegexList = processUserRegexesString(inputs)
+						userRegexList = processUserString1(inputs)
+
+					}
+					if size != 3 {
+						size = size * 1024 * 1024
 
 					}
 
-					search.Searchall(searchPath, userRegexList, userOnlyFlag, userExtension, userOnlyExten)
+					if char != 200 {
+
+						char = char
+					}
+
+					search.Searchall(searchPath, userRegexList, userOnlyFlag, userExtension, userOnlyExten, size, char)
 				} else {
 					cli.ShowSubcommandHelp(c)
 				}
